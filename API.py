@@ -3,22 +3,17 @@ import logging
 import os
 import json
 import subprocess
+from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 
 app = Flask(__name__)
 
 def check_database_connection():
     try:
-        connection = psycopg2.connect(user="Username",
-                                      password="Password",
-                                      host="host number",
-                                      port="port number",
-                                      database="Database")
-        cursor = connection.cursor()
-        cursor.execute("SELECT 1")
-        cursor.close()
-        connection.close()
+        client = MongoClient("mongodb://yourUsername:yourPassword@host:port/Database") #modify based on your username and password
+        client.admin.command('ping')
         return True
-    except OperationalError as e:
+    except ConnectionFailure as e:
         print(f"Database connection failed: {e}")
         return False
 
